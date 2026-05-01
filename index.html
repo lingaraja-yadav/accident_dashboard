@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>🚨 Accident Detection System</title>
+
+<style>
+body {
+    font-family: Arial;
+    background: linear-gradient(135deg,#0f172a,#1e293b);
+    color: white;
+    text-align: center;
+    margin: 0;
+}
+
+h1 {
+    color: #38bdf8;
+    margin-top: 20px;
+}
+
+.card {
+    background: #1e293b;
+    padding: 20px;
+    margin: 20px auto;
+    width: 300px;
+    border-radius: 12px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.5);
+}
+
+button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 8px;
+    background: #38bdf8;
+    color: black;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+button:hover {
+    background: #0ea5e9;
+}
+
+.alert {
+    color: red;
+    font-size: 22px;
+    font-weight: bold;
+}
+</style>
+
+</head>
+
+<body>
+
+<h1>🚨 Accident Detection Dashboard</h1>
+
+<div class="card">
+    <h2>Status</h2>
+    <p id="status">Waiting...</p>
+</div>
+
+<div class="card">
+    <h2>Location</h2>
+    <p id="location">---</p>
+
+    <button onclick="openMap()">📍 Open in Google Maps</button>
+</div>
+
+<div class="card">
+    <h2>Live Image</h2>
+    <img id="img" width="250"/>
+</div>
+
+<script>
+
+let currentLat = 0;
+let currentLng = 0;
+
+async function loadData() {
+
+    let res = await fetch("https://your-project.firebaseio.com/data.json");
+    let data = await res.json();
+
+    // Status
+    document.getElementById("status").innerText = data.status;
+
+    if(data.status === "Accident Detected"){
+        document.getElementById("status").className = "alert";
+    }
+
+    // Location
+    currentLat = data.lat;
+    currentLng = data.lng;
+
+    document.getElementById("location").innerText =
+        "Lat: " + currentLat + " , Lng: " + currentLng;
+
+    // Image
+    document.getElementById("img").src = data.image;
+}
+
+// Open Google Map
+function openMap() {
+    let url = "https://www.google.com/maps?q=" + currentLat + "," + currentLng;
+    window.open(url, "_blank");
+}
+
+// Refresh every 3 seconds
+setInterval(loadData, 3000);
+
+</script>
+
+</body>
+</html>
