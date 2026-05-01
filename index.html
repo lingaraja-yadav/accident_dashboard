@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>🚨 Accident Detection System</title>
+
+<style>
+body {
+    font-family: Arial;
+    background: linear-gradient(135deg,#0f172a,#1e293b);
+    color: white;
+    text-align: center;
+}
+h1 { color: #38bdf8; }
+
+.card {
+    background: #1e293b;
+    padding: 20px;
+    margin: 20px;
+    border-radius: 12px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.5);
+}
+
+.alert {
+    color: red;
+    font-size: 24px;
+    font-weight: bold;
+}
+</style>
+
+</head>
+
+<body>
+
+<h1>🚨 AI Accident Detection Dashboard</h1>
+
+<div class="card">
+    <h2>Status</h2>
+    <p id="status">Waiting...</p>
+</div>
+
+<div class="card">
+    <h2>Location</h2>
+    <p id="location">---</p>
+</div>
+
+<div class="card">
+    <h2>Live Image</h2>
+    <img id="img" width="300"/>
+</div>
+
+<script>
+async function loadData() {
+    let res = await fetch("https://your-project.firebaseio.com/data.json");
+    let data = await res.json();
+
+    document.getElementById("status").innerText = data.status;
+    document.getElementById("location").innerText =
+        "Lat: " + data.lat + " , Lng: " + data.lng;
+
+    document.getElementById("img").src = data.image;
+
+    if(data.status === "Accident Detected") {
+        document.getElementById("status").className = "alert";
+    }
+}
+
+setInterval(loadData, 3000);
+</script>
+
+</body>
+</html>
